@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>آکادمی فیزیک | تکلیف آنلاین</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="atom">⚛</span><span>آکادمی فیزیک</span></div>
+  <span class="tagline">یادگیری، تمرین، پیشرفت</span>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">PHYSICS ACADEMY</p>
+      <h1>فیزیک را <span>با تمرین</span> یاد بگیر</h1>
+      <p class="lead">محیطی ساده برای دریافت تکلیف، پاسخ‌گویی آنلاین و پیگیری پیشرفت دانش‌آموزان.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true"><div class="orbit o1"></div><div class="orbit o2"></div><div class="nucleus">⚛</div></div>
+  </section>
+
+  <div id="notice" class="notice hidden" role="status"></div>
+
+  <section id="setupNotice" class="panel hidden">
+    <h2>اتصال پایگاه داده هنوز تنظیم نشده</h2>
+    <p>فایل <code>supabase-config.js</code> را باز کن و URL و کلید عمومی پروژه Supabase خودت را وارد کن.</p>
+  </section>
+
+  <section id="authPanel" class="panel auth-grid">
+    <div class="auth-intro">
+      <span class="pill">ورود به سامانه</span>
+      <h2>خوش آمدی!</h2>
+      <p>برای ادامه، وارد حساب دبیر شو یا از کد کلاس وارد بخش دانش‌آموزی شو.</p>
+      <div class="feature-list"><span>✓ تکالیف آنلاین</span><span>✓ تصحیح خودکار</span><span>✓ گزارش عملکرد</span></div>
+    </div>
+    <div class="auth-forms">
+      <div class="tabs">
+        <button class="tab active" data-tab="teacherLogin">ورود دبیر</button>
+        <button class="tab" data-tab="studentEntry">ورود دانش‌آموز</button>
+      </div>
+      <form id="teacherLogin" class="tab-content">
+        <label for="teacherEmail">ایمیل دبیر</label>
+        <input id="teacherEmail" type="email" autocomplete="username" placeholder="name@example.com" required>
+        <label for="teacherPassword">رمز عبور</label>
+        <input id="teacherPassword" type="password" autocomplete="current-password" placeholder="رمز عبور" required>
+        <button class="btn primary full" type="submit">ورود به پنل دبیر</button>
+        <button id="forgotPassword" class="text-btn" type="button">فراموشی رمز عبور</button>
+        <p class="muted small">حساب دبیر از بخش Authentication در Supabase ساخته می‌شود.</p>
+      </form>
+      <form id="studentEntry" class="tab-content hidden">
+        <label for="classCode">کد کلاس</label>
+        <input id="classCode" autocomplete="off" placeholder="مثلاً PHY-204" required>
+        <label for="studentName">نام و نام خانوادگی</label>
+        <input id="studentName" autocomplete="name" placeholder="نام دانش‌آموز" required>
+        <button class="btn primary full" type="submit">مشاهده تکالیف</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="teacherPanel" class="hidden">
+    <div class="section-head">
+      <div><p class="eyebrow">TEACHER DASHBOARD</p><h2>پنل دبیر</h2></div>
+      <button id="logoutBtn" class="btn outline">خروج</button>
+    </div>
+    <div class="dashboard-grid">
+      <section class="panel">
+        <h3>ساخت کلاس</h3>
+        <form id="createClassForm">
+          <label for="classTitle">نام کلاس</label>
+          <input id="classTitle" placeholder="مثلاً فیزیک دهم – دوشنبه‌ها" required>
+          <button class="btn primary full" type="submit">ساخت کلاس</button>
+        </form>
+        <div id="classList" class="stack"></div>
+      </section>
+      <section class="panel">
+        <h3>تعریف تکلیف</h3>
+        <form id="createAssignmentForm">
+          <label for="assignmentClass">کلاس</label>
+          <select id="assignmentClass" required><option value="">ابتدا کلاس بساز</option></select>
+          <label for="assignmentTitle">عنوان تکلیف</label>
+          <input id="assignmentTitle" placeholder="مثلاً چگالی" required>
+          <label for="assignmentDescription">توضیحات</label>
+          <textarea id="assignmentDescription" rows="3" placeholder="توضیح کوتاه برای دانش‌آموز"></textarea>
+          <label for="assignmentQuestions">سؤال‌ها (هر سؤال در یک خط؛ قالب: متن سؤال | گزینه۱ | گزینه۲ | گزینه۳ | شماره پاسخ درست)</label>
+          <textarea id="assignmentQuestions" rows="7" placeholder="یک مکعب با جرم ۲۰ گرم و حجم ۵ سانتی‌متر مکعب، چگالی آن چقدر است؟ | ۲ | ۴ | ۵ | 2" required></textarea>
+          <button class="btn primary full" type="submit">انتشار تکلیف</button>
+        </form>
+      </section>
+    </div>
+    <section class="panel">
+      <h3>تکالیف و پاسخ‌های ثبت‌شده</h3>
+      <div id="assignmentList" class="stack"></div>
+      <div class="table-wrap"><table><thead><tr><th>دانش‌آموز</th><th>کلاس</th><th>تکلیف</th><th>نمره</th><th>زمان</th></tr></thead><tbody id="submissionRows"><tr><td colspan="5">هنوز پاسخی ثبت نشده است.</td></tr></tbody></table></div>
+    </section>
+  </section>
+
+  <section id="studentPanel" class="hidden">
+    <div class="section-head"><div><p class="eyebrow">STUDENT SPACE</p><h2 id="studentWelcome">تکالیف من</h2></div><button id="studentBack" class="btn outline">بازگشت</button></div>
+    <div id="studentAssignments" class="stack"></div>
+  </section>
+
+  <section id="recoveryPanel" class="panel narrow hidden">
+    <h2>تعیین رمز عبور جدید</h2>
+    <p class="muted">رمز جدید را دو بار وارد کن.</p>
+    <form id="recoveryForm">
+      <label for="newPassword">رمز جدید (حداقل ۸ نویسه)</label>
+      <input id="newPassword" type="password" minlength="8" autocomplete="new-password" required>
+      <label for="confirmPassword">تکرار رمز جدید</label>
+      <input id="confirmPassword" type="password" minlength="8" autocomplete="new-password" required>
+      <button class="btn primary full" type="submit">ثبت رمز جدید</button>
+    </form>
+  </section>
+</main>
+<footer>آکادمی فیزیک <span>•</span> یادگیری با کنجکاوی آغاز می‌شود.</footer>
+</body>
+</html>
